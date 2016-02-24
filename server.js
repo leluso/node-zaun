@@ -30,6 +30,7 @@ let options = {
 }
 
 let request = http.get(options, (res) => {
+    res.setEncoding('binary');
     let data = '';
 
     res.on('data', (chunk) => {
@@ -38,7 +39,7 @@ let request = http.get(options, (res) => {
 
     setInterval(() => {console.log('writign');
         let date = new Date()
-        fs.writeFile(SAVE_ROOT+'WFAN-'+(date.getMonth()+1)+'-'+date.getDate()+'-'+date.getFullYear()+'-'+date.getHours()+'.mp3', data, (err) => {
+        fs.writeFile(SAVE_ROOT+'WFAN-'+(date.getMonth()+1)+'-'+date.getDate()+'-'+date.getFullYear()+'-'+date.getHours()+'.mp3', data, 'binary', (err) => {
             if(err) console.error('Ain\'t nothing I can do about it.', err);
             data = '';
         })
@@ -46,7 +47,7 @@ let request = http.get(options, (res) => {
 
     res.on('end', () => {
         let date = new Date()
-        fs.writeFile(SAVE_ROOT+'WFAN-'+(date.getMonth()+1)+'-'+date.getDate()+'-'+date.getFullYear()+'-'+date.getHours()+'.mp3', data, (err) => {
+        fs.writeFile(SAVE_ROOT+'WFAN-'+(date.getMonth()+1)+'-'+date.getDate()+'-'+date.getFullYear()+'-'+date.getHours()+'.mp3', data, 'binary', (err) => {
             if(err) console.error('Ain\'t nothing I can do about it.', err)
         })
     })
