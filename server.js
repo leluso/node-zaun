@@ -35,6 +35,10 @@ let request = http.get(options, (res) => {
 
     res.on('data', (chunk) => {
         data += chunk;
+        let date = new Date()
+        fs.writeFile(SAVE_ROOT+'WFAN-'+(date.getMonth()+1)+'-'+date.getDate()+'-'+date.getFullYear()+'-'+(date.getHours()-1)+'.mp3', data, 'binary', (err) => {
+            if(err) console.error('Ain\'t nothing I can do about it.', err);
+        })
     });
 
     setInterval(() => {console.log('writign');
