@@ -1,7 +1,7 @@
 'use strict';
 
-const SAVE_ROOT = '/Users/justin/zauns/';
-const PORT = 8080;
+const SAVE_ROOT = '/var/www/html/';
+const PORT = 8083;
 
 const ZAUN_STREAM_HOST = '8663.live.streamtheworld.com';
 const ZAUN_STREAM_PORT = 80;
@@ -39,15 +39,15 @@ let request = http.get(options, (res) => {
 
     setInterval(() => {console.log('writign');
         let date = new Date()
-        fs.writeFile(SAVE_ROOT+'WFAN-'+(date.getMonth()+1)+'-'+date.getDate()+'-'+date.getFullYear()+'-'+date.getHours()+'.mp3', data, 'binary', (err) => {
+        fs.writeFile(SAVE_ROOT+'WFAN-'+(date.getMonth()+1)+'-'+date.getDate()+'-'+date.getFullYear()+'-'+(date.getHours()-1)+'.mp3', data, 'binary', (err) => {
             if(err) console.error('Ain\'t nothing I can do about it.', err);
             data = '';
         })
-    }, 10000)
+    }, 60*60*1000)
 
     res.on('end', () => {
         let date = new Date()
-        fs.writeFile(SAVE_ROOT+'WFAN-'+(date.getMonth()+1)+'-'+date.getDate()+'-'+date.getFullYear()+'-'+date.getHours()+'.mp3', data, 'binary', (err) => {
+        fs.writeFile(SAVE_ROOT+'WFAN-'+(date.getMonth()+1)+'-'+date.getDate()+'-'+date.getFullYear()+'-'+(date.getHours()-1)+'.mp3', data, 'binary', (err) => {
             if(err) console.error('Ain\'t nothing I can do about it.', err)
         })
     })
