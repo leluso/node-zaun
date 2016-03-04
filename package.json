@@ -1,0 +1,28 @@
+{
+  "name": "node-zaun",
+  "version": "1.0.0",
+  "description": "Record a binary stream for however long you like",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leluso/node-zaun.git"
+  },
+  "keywords": [
+    "audio",
+    "stream",
+    "download"
+  ],
+  "author": "Justin Barber",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leluso/node-zaun/issues"
+  },
+  "homepage": "https://github.com/leluso/node-zaun#readme",
+  "bin": {
+      "node-zaun": "./server.js"
+  }
+}
