@@ -1,0 +1,3 @@
+WFAN
+Stream: 8663.live.streamtheworld.com
+Path: WFANAM_SC

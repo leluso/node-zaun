@@ -1,54 +1,61 @@
+#!/usr/bin/env /usr/local/bin/node
 'use strict';
 
-const SAVE_ROOT = '/var/www/html/';
-const PORT = 8083;
+// By Justin Barber
 
-const ZAUN_STREAM_HOST = '8663.live.streamtheworld.com';
-const ZAUN_STREAM_PORT = 80;
-const ZAUN_STREAM_PATH = '/WFANAM_SC'
+const SAVE_ROOT = '/var/www/html/';
+
+const DEFAULT_PORT = 80;
+const DEFAULT_LENGTH = 60*60;
+const DEFAULT_PATH = '';
 
 let http = require('http');
 let fs = require('fs');
+let program = require('commander');
 
-function handleRequest(request, response){
-    response.end('It Works!! Path Hit: ' + request.url);
-}
+program.arguments('<stream>')
+       .option('-d, --path <path>', 'Path to collect stream from. Assumes /', DEFAULT_PATH)
+       .option('-p, --port <port>', 'Port number. Assumes 80', DEFAULT_PORT)
+       .option('-b, --brand <brand>')
+       .option('-l, --length <length>', 'Length to record, in seconds. Defaults to an hour', DEFAULT_LENGTH)
+       .action((stream) => {
+           let options = {
+               host: stream,
+               port: program.port,
+               path: '/' + program.path,
+           }
 
-//Create a server
-var server = http.createServer(handleRequest);
 
-//Lets start our server
-server.listen(PORT, function(){
-    //Callback triggered when server is successfully listening. Hurray!
-    console.log("Server listening on: http://localhost:%s", PORT);
-});
+           console.log('Picking up: ', options);
+           http.get(options, (res) => {
+               let date = new Date();
+               let brand = program.brand ? program.brand + '-' : '';
+               let fileName = brand + date.toDateString().replace(/\s/g, '-') + '-' + date.toTimeString().substring(0, 8).replace(/:/g, '-') + '.mp3';
+               console.log(fileName);
+               res.setEncoding('binary');
+               let data = '';
 
-let options = {
-    host: ZAUN_STREAM_HOST,
-    port: ZAUN_STREAM_PORT,
-    path: ZAUN_STREAM_PATH,
-}
+               res.on('data', (chunk) => {
+                   data += chunk;
+               });
 
-let request = http.get(options, (res) => {
-    res.setEncoding('binary');
-    let data = '';
+               setTimeout(() => {
+                   fs.writeFile(SAVE_ROOT+fileName, data, 'binary', (err) => {
+                       if(err) console.error('Ain\'t nothing I can do about it.', err);
+                       data = '';
+                       process.exit();
+                   })
+               }, program.length*1000)
 
-    res.on('data', (chunk) => {
-        data += chunk;
-    });
+               res.on('end', () => {
+                   let date = new Date()
+                   fs.writeFile(SAVE_ROOT+fileName, data, 'binary', (err) => {
+                       if(err) console.error('Ain\'t nothing I can do about it.', err)
+                   })
+               })
 
-    setInterval(() => {console.log('writign');
-        let date = new Date()
-        fs.writeFile(SAVE_ROOT+'WFAN-'+(date.getMonth()+1)+'-'+date.getDate()+'-'+date.getFullYear()+'-'+(date.getHours()-1)+'.mp3', data, 'binary', (err) => {
-            if(err) console.error('Ain\'t nothing I can do about it.', err);
-            data = '';
-        })
-    }, 60*60*1000)
 
-    res.on('end', () => {
-        let date = new Date()
-        fs.writeFile(SAVE_ROOT+'WFAN-'+(date.getMonth()+1)+'-'+date.getDate()+'-'+date.getFullYear()+'-'+(date.getHours()-1)+'.mp3', data, 'binary', (err) => {
-            if(err) console.error('Ain\'t nothing I can do about it.', err)
-        })
-    })
-})
+           })
+
+       })
+       .parse(process.argv);
