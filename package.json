@@ -23,10 +23,6 @@
   },
   "homepage": "https://github.com/leluso/node-zaun#readme",
   "bin": {
-    "node-zaun": "./server.js"
-  },
-  "dependencies": {
-    "aws-sdk": "^2.4.6",
-    "commander": "^2.9.0"
+      "node-zaun": "./server.js"
   }
 }
