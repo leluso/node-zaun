@@ -23,6 +23,9 @@
   },
   "homepage": "https://github.com/leluso/node-zaun#readme",
   "bin": {
-      "node-zaun": "./server.js"
+    "node-zaun": "./server.js"
+  },
+  "dependencies": {
+    "commander": "^2.9.0"
   }
 }
