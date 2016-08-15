@@ -42,39 +42,74 @@ program.arguments('<stream>')
                    data += chunk;
                });
 
-               setTimeout(() => {
-                   console.log('Uploading...');
-                   data = Buffer.from(data, 'binary');
-                   s3.upload({
-                       Key: fileName,
-                       Body: data,
-                       ContentType: 'audio/mpeg'
-                   }, function(err, data) {
-                       if(err) {
-                           console.error('Error uploading', err);
-                       }
-//                       s3.listObjects({Bucket: 'ordio'}).on('success', function(response) {
-  //                       console.log(response.data);
-    //                     process.exit(!!err);
-      //                 })
-                       process.exit(!!err);
+                setTimeout(() => {
+                  console.log('Uploading...');
+                  data = Buffer.from(data, 'binary');
+                    s3.upload({
+                      Key: fileName,
+                      Body: data,
+                      ContentType: 'audio/mpeg'
+                    }, function(err, data) {
+                      if(err) {
+                        console.error('Error uploading', err);
+                      }
+                      s3ListAll({Bucket: 'ordio'}, function(results) {
+                        results.sort((a,b) => new Date(b.LastModified) - new Date(a.LastModified));
+
+                        let tableBody = results.reduce((t, o) => {
+                          return t + `<tr>
+                                        <td><a href="${'/' + o.Key}">${o.Key}</a></td>
+                                        <td><a href="http://cdn.leluso.com/al?u=http://ordio.s3-website-sa-east-1.amazonaws.com/${o.Key}">al</a></td>
+                                        <td>${o.LastModified}</td>
+                                      </tr>`;
+                        }, '')
+                        let index = `<table>${ tableBody }</table>`;
+
+                        s3.upload({
+                          Key: 'index.html',
+                          Body: index,
+                          ContentType: 'text/html',
+                        }, function(err, data) {
+                          process.exit(!!err);
+                        })
+                      })
+
                    });
                }, program.length*1000)
 
                res.on('end', () => {
                    console.log('Uploading...');
                    data = Buffer.from(data, 'binary');
-                   s3.upload({
-                       Key: fileName,
-                       Body: data,
-                       ContentType: 'audio/mpeg'
-                   }, function(err, data) {
-                       if(err) {
-                           console.error('Error uploading', err);
-                       }
+                  s3.upload({
+                    Key: fileName,
+                    Body: data,
+                    ContentType: 'audio/mpeg'
+                  }, function(err, data) {
+                    if(err) {
+                      console.error('Error uploading', err);
+                    }
+                    s3ListAll({Bucket: 'ordio'}, function(results) {
+                      results.sort((a,b) => new Date(b.LastModified) - new Date(a.LastModified));
 
-                       process.exit(!!err);
-                   });
+                      let tableBody = results.reduce((t, o) => {
+                        return t + `<tr>
+                                      <td><a href="${'/' + o.Key}">${o.Key}</a></td>
+                                      <td><a href="http://cdn.leluso.com/al?u=http://ordio.s3-website-sa-east-1.amazonaws.com/${o.Key}">al</a></td>
+                                      <td>${o.LastModified}</td>
+                                    </tr>`;
+                      }, '')
+                      let index = `<table>${ tableBody }</table>`;
+
+                      s3.upload({
+                        Key: 'index.html',
+                        Body: index,
+                        ContentType: 'text/html',
+                      }, function(err, data) {
+                        process.exit(!!err);
+                      })
+                    });
+
+                 });
                });
 
 
@@ -82,3 +117,23 @@ program.arguments('<stream>')
 
        })
        .parse(process.argv);
+
+function s3ListAll(params, callback) {
+  let allKeys = [];
+
+  listAllKeys(params.Bucket, params.Marker, function() {
+    callback(allKeys);
+  });
+
+  function listAllKeys(bucket, marker, cb)
+  {
+    s3.listObjects({Bucket: bucket, Marker: marker}, function(err, data){
+      allKeys = allKeys.concat(data.Contents);
+
+      if(data.IsTruncated)
+        listAllKeys(bucket, data.NextMarker, cb);
+      else
+        cb();
+    });
+}
+}
