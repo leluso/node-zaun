@@ -26,6 +26,7 @@
     "node-zaun": "./server.js"
   },
   "dependencies": {
+    "aws-sdk": "^2.5.0",
     "commander": "^2.9.0"
   }
 }

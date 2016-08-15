@@ -12,6 +12,9 @@ const DEFAULT_PATH = '';
 let http = require('http');
 let fs = require('fs');
 let program = require('commander');
+let AWS = require('aws-sdk');
+
+let s3 = new AWS.S3({ params: { Bucket: 'ordio' } });
 
 program.arguments('<stream>')
        .option('-d, --path <path>', 'Path to collect stream from. Assumes /', DEFAULT_PATH)
@@ -40,19 +43,39 @@ program.arguments('<stream>')
                });
 
                setTimeout(() => {
-                   fs.writeFile(SAVE_ROOT+fileName, data, 'binary', (err) => {
-                       if(err) console.error('Ain\'t nothing I can do about it.', err);
-                       data = '';
-                       process.exit();
-                   })
+                   console.log('Uploading...');
+                   data = Buffer.from(data, 'binary');
+                   s3.upload({
+                       Key: fileName,
+                       Body: data,
+                       ContentType: 'audio/mpeg'
+                   }, function(err, data) {
+                       if(err) {
+                           console.error('Error uploading', err);
+                       }
+//                       s3.listObjects({Bucket: 'ordio'}).on('success', function(response) {
+  //                       console.log(response.data);
+    //                     process.exit(!!err);
+      //                 })
+                       process.exit(!!err);
+                   });
                }, program.length*1000)
 
                res.on('end', () => {
-                   let date = new Date()
-                   fs.writeFile(SAVE_ROOT+fileName, data, 'binary', (err) => {
-                       if(err) console.error('Ain\'t nothing I can do about it.', err)
-                   })
-               })
+                   console.log('Uploading...');
+                   data = Buffer.from(data, 'binary');
+                   s3.upload({
+                       Key: fileName,
+                       Body: data,
+                       ContentType: 'audio/mpeg'
+                   }, function(err, data) {
+                       if(err) {
+                           console.error('Error uploading', err);
+                       }
+
+                       process.exit(!!err);
+                   });
+               });
 
 
            })
