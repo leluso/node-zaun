@@ -64,7 +64,9 @@ program.arguments('<stream>')
                                         <td>${o.Size}</td>
                                       </tr>`;
                         }, '')
-                        let index = `<table>
+                        let index = `<head><title>wfan.leluso</title>${ style() }</head>
+                                    <h2>wfan.leluso</h2>
+                                    <table>
                                       <tr>
                                         <th>URL</th>
                                         <th>AL</th>
@@ -108,7 +110,9 @@ program.arguments('<stream>')
                                       <td>${o.Size}</td>
                                     </tr>`;
                         }, '')
-                        let index = `<table>
+                        let index = `<head><title>wfan.leluso</title>${ style() }</head>
+                                    <h2>wfan.leluso</h2>
+                                    <table>
                                       <tr>
                                         <th>URL</th>
                                         <th>AL</th>
@@ -153,5 +157,64 @@ function s3ListAll(params, callback) {
       else
         cb();
     });
+  }
 }
+
+function style() {
+  return `<style>
+        @import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500';
+        body {
+          margin: 0 auto;
+          max-width: 50em;
+          font-family: Roboto, "Helvetica", "Arial", sans-serif;
+          line-height: 1.5;
+          padding: 2em 1em;
+          color: #555;
+        }
+
+        table { border: none; border-collapse: collapse; }
+/*        table td { border-left: 1px solid #000; }*/
+/*        table td:first-child{ border-left: none; }*/
+
+        table tr:first-child { border-bottom: 1px solid #000; }
+
+        table tr td:last-child:after {
+            content: ' bytes';
+        }
+
+        td, th {
+            padding: 5px;
+/*
+            border-left-color: black;
+            border-left-style: solid;
+            border-left-width: 1px;
+
+            border-right-color: black;
+            border-right-style: solid;
+            border-right-width: 1px;
+*/
+        }
+
+        h2 {
+          margin-top: 1em;
+          padding-top: 1em;
+        }
+
+        h1,
+        h2,
+        strong {
+          color: #333;
+        }
+
+        a {
+          color: #582c83;
+          text-decoration: none;
+        }
+
+        a:hover {
+            border-bottom-color: #582c83;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+        }
+    </style>`;
 }
