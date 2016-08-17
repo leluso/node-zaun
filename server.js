@@ -61,9 +61,18 @@ program.arguments('<stream>')
                                         <td><a href="${'/' + o.Key}">${o.Key}</a></td>
                                         <td><a href="http://cdn.leluso.com/al?u=http://ordio.s3-website-sa-east-1.amazonaws.com/${o.Key}">al</a></td>
                                         <td>${o.LastModified}</td>
+                                        <td>${o.Size}</td>
                                       </tr>`;
                         }, '')
-                        let index = `<table>${ tableBody }</table>`;
+                        let index = `<table>
+                                      <tr>
+                                        <th>URL</th>
+                                        <th>AL</th>
+                                        <th>Date Created</th>
+                                        <th>Size</th>
+                                      </tr>
+                                      ${ tableBody }
+                                    </table>`;
 
                         s3.upload({
                           Key: 'index.html',
@@ -96,9 +105,18 @@ program.arguments('<stream>')
                                       <td><a href="${'/' + o.Key}">${o.Key}</a></td>
                                       <td><a href="http://cdn.leluso.com/al?u=http://ordio.s3-website-sa-east-1.amazonaws.com/${o.Key}">al</a></td>
                                       <td>${o.LastModified}</td>
+                                      <td>${o.Size}</td>
                                     </tr>`;
-                      }, '')
-                      let index = `<table>${ tableBody }</table>`;
+                        }, '')
+                        let index = `<table>
+                                      <tr>
+                                        <th>URL</th>
+                                        <th>AL</th>
+                                        <th>Date Created</th>
+                                        <th>Size</th>
+                                      </tr>
+                                      ${ tableBody }
+                                    </table>`;
 
                       s3.upload({
                         Key: 'index.html',
