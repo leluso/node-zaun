@@ -1,0 +1,30 @@
+{
+  "Mike_Zaun": {
+    "title": "Mike Zaun",
+    "description": "An audio feed of what should be Mike's On from WFAN",
+    "link": "http://wfan.leluso.com",
+    "webMaster": "brbr@outlook.com",
+    "itunes": {
+      "image": "https://upload.wikimedia.org/wikipedia/en/thumb/d/dc/MikeFrancesa2008.jpg/220px-MikeFrancesa2008.jpg"
+    }
+  },
+
+  "WOL": {
+    "title": "WOL",
+    "description": "An audio feed of what should be WOL",
+    "link": "http://wfan.leluso.com",
+    "webMaster": "brbr@outlook.com",
+    "itunes": {
+      "image": "https://pbs.twimg.com/profile_images/3170981894/8c9b3f20d45b08eec56ba5f54a5fd915_400x400.jpeg"
+    }
+  },
+
+  "all": {
+    "title": "wfan.leluso Master",
+    "description": "All wfan.leluso recordings",
+    "link": "http://wfan.leluso.com",
+    "itunes": {
+      "image": "https://upload.wikimedia.org/wikipedia/en/thumb/d/dc/MikeFrancesa2008.jpg/220px-MikeFrancesa2008.jpg"
+    }
+  }
+}
