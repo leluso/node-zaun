@@ -43,6 +43,7 @@ program.arguments('<stream>')
                });
 
                 setTimeout(() => {
+                  console.log('Time\'s up', date);
                   console.log('Uploading...');
                   data = Buffer.from(data, 'binary');
                     s3.upload({
@@ -90,6 +91,7 @@ program.arguments('<stream>')
 
                res.on('end', () => {
                    console.log('Uploading...');
+                   console.log('Stream ended', data);
                    data = Buffer.from(data, 'binary');
                   s3.upload({
                     Key: fileName,
@@ -135,7 +137,7 @@ program.arguments('<stream>')
                });
 
 
-           })
+           }).on('error', (e) => console.log(e));
 
        })
        .parse(process.argv);
