@@ -67,12 +67,12 @@ program.arguments('<stream>')
             results.sort((a, b) => new Date(b.LastModified) - new Date(a.LastModified));
 
             let tableBody = results.reduce((t, o) => {
-              return t + `<tr>
+              return t + (o.Key.endsWith('.html') ? '' : `<tr>
                                   <td><a href="${'/' + o.Key}">${o.Key}</a></td>
                                   <td><a href="http://cdn.leluso.com/al?u=http://ordio.s3-website-sa-east-1.amazonaws.com/${o.Key}">al</a></td>
                                   <td>${o.LastModified}</td>
                                   <td>${o.Size}</td>
-                                </tr>`;
+                                </tr>`);
             }, '')
             let index = `<head><title>wfan.leluso</title>${ style() }</head>
                               <h2>wfan.leluso</h2>
@@ -93,18 +93,24 @@ program.arguments('<stream>')
             }, function(err, data) {
 
               let feeds = rssGenerator(results.map(r => `http://ordio.s3-website-sa-east-1.amazonaws.com/${r.Key}`));
-              console.log(feeds);
               async.forEachOf(feeds, (xml, feed, cb) => {
-                console.log(feed, program.brand);
                 if(feed === program.brand || feed === 'all') {
-                  console.log('Uploading', `${feed}.rss.xml`)
+                  console.log('Uploading', `${feed}.rss.xml`);
                   s3.upload({
                     Key: `${feed}.rss.xml`,
                     Body: feeds[feed],
                     ContentType: 'text/xml',
-                  }, cb);
+                  }, (err, data) => {
+                    console.log('Uploaded feed');
+                    cb(err);
+                  });
+                } else {
+                  cb(null);
                 }
-              }, process.exit);
+              }, (err) => {
+                console.log('Done recording');
+                process.exit(err);
+              });
             });
           });
 
@@ -129,12 +135,12 @@ program.arguments('<stream>')
             results.sort((a, b) => new Date(b.LastModified) - new Date(a.LastModified));
 
             let tableBody = results.reduce((t, o) => {
-              return t + `<tr>
+              return t + (o.Key.endsWith('.html') ? '' : `<tr>
                             <td><a href="${'/' + o.Key}">${o.Key}</a></td>
                             <td><a href="http://cdn.leluso.com/al?u=http://ordio.s3-website-sa-east-1.amazonaws.com/${o.Key}">al</a></td>
                             <td>${o.LastModified}</td>
                             <td>${o.Size}</td>
-                          </tr>`;
+                          </tr>`);
             }, '')
             let index = `<head><title>wfan.leluso</title>${ style() }</head>
                           <h2>wfan.leluso</h2>

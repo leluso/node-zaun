@@ -18,8 +18,11 @@ module.exports = (urls) => {
 }
 
 function generateFeed(feed, urls) {
-  console.log(urls.filter(url => url.indexOf(feed) > -1));
-  let items = urls.filter(url => url.indexOf(feed) > -1).map(generateItem.bind(0, feed)).join('\n');
+  let items = urls.filter(url => url.indexOf(feed) > -1)
+    .filter(url => url.endsWith('.mp3'))
+    .map(generateItem.bind(0, feed))
+    .join('\n');
+
   let feedInfo = config[feed];
   return `<?xml version="1.0" encoding="UTF-8"?>
   <rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
@@ -37,8 +40,9 @@ function generateFeed(feed, urls) {
 }
 
 function generateItem(feed, url) {
-  console.log('url', url);
-  let name = url.replace(`http://ordio.s3-website-sa-east-1.amazonaws.com/{$feed}-`, '').replace('.mp3', '');
+  let name = url.replace(/http(s)?\:\/\/ordio\.s3\-website\-sa\-east\-1\.amazonaws.com\//, '')
+    .replace(`${feed}-`, '')
+    .replace('.mp3', '');
   return `<item>
   <title>${name}</title>
   <link>${url}</link>
