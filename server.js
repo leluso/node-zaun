@@ -61,11 +61,12 @@ program.arguments('<stream>')
           if (err) {
             console.error('Error uploading', err);
           }
+	  console.log('Uploaded media');
           s3ListAll({
             Bucket: 'ordio'
           }, function(results) {
             results.sort((a, b) => new Date(b.LastModified) - new Date(a.LastModified));
-
+            console.log('Listed');
             let tableBody = results.reduce((t, o) => {
               return t + (o.Key.endsWith('.html') ? '' : `<tr>
                                   <td><a href="${'/' + o.Key}">${o.Key}</a></td>
@@ -91,7 +92,7 @@ program.arguments('<stream>')
               Body: index,
               ContentType: 'text/html',
             }, function(err, data) {
-
+              console.log('Uploaded index');
               let feeds = rssGenerator(results.map(r => `http://ordio.s3-website-sa-east-1.amazonaws.com/${r.Key}`));
               async.forEachOf(feeds, (xml, feed, cb) => {
                 if(feed === program.brand || feed === 'all') {
@@ -184,8 +185,9 @@ program.arguments('<stream>')
 
 function s3ListAll(params, callback) {
   let allKeys = [];
-
+  console.log('listing...');
   listAllKeys(params.Bucket, params.Marker, function() {
+    console.log('Got list');
     callback(allKeys);
   });
 
@@ -195,8 +197,8 @@ function s3ListAll(params, callback) {
       Marker: marker
     }, function(err, data) {
       allKeys = allKeys.concat(data.Contents);
-
-      if (data.IsTruncated)
+      console.log(data.IsTruncated, data.NextMarker);
+      if (data.NextMarker)
         listAllKeys(bucket, data.NextMarker, cb);
       else
         cb();
